@@ -52,6 +52,7 @@
       <h2>Timer: {{ elapsed }}</h2>
       <h2>Questions left: {{ amount - answered }}</h2>
       <div>{{ question }}</div>
+      // @ts-expect-error
       <InputNumber v-model="answer" @input="checkAnswer" />
     </div>
     <!-- Render this part at the end -->
@@ -134,9 +135,11 @@ export default defineComponent({
   watch: {},
   methods: {
     // Function parameter comes from https://primefaces.org/primevue/showcase/#/inputnumber
-    checkAnswer(event: { originalEvent: KeyboardEvent; value: number }): void {
+    checkAnswer(event: number | Event): InputNumber {
+      // @ts-expect-error Error in primevue interface forces this conversion
+      const fixedEvent = event as { originalEvent: Event; value: any }
       // Check here if answer matches intended answer
-      if (event.value == this.modelAnswer) {
+      if (fixedEvent.value == this.modelAnswer) {
         // Make answer field empty
         // @ts-expect-error Calling unsupported methods
         event.originalEvent.target.value = "";
@@ -144,6 +147,7 @@ export default defineComponent({
         // Generate new question
         this.generateQuestion();
       }
+      return fixedEvent.originalEvent.target as unknown as InputNumber
     },
     generateQuestion(): void {
       // If done, go to the end
