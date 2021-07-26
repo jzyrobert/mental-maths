@@ -52,7 +52,6 @@
       <h2>Timer: {{ elapsed }}</h2>
       <h2>Questions left: {{ amount - answered }}</h2>
       <div>{{ question }}</div>
-      // @ts-expect-error
       <InputNumber v-model="answer" @input="checkAnswer" />
     </div>
     <!-- Render this part at the end -->
